@@ -1,0 +1,94 @@
+<doctype html>
+<html>
+<head>
+	<meta charset="utf8"/>
+	<title>宠物发帖页</title>
+	<style type="text/css">
+		*{margin:0; padding:0;}
+		.main{width:1000px; margin:0 auto;font:12px/1.5 arial,helvetica,clean,sans-serif;}
+		
+		h2{background-color:#eee;text-align:center;margin-bottom:10px;}
+		table tr{line-height:30px;}
+		input{margin-right:4px;}
+		button{padding:5px 40px;}
+		
+		.error{color:red;font-size:12px;}
+		.left-td{width:100px;}
+		.required-td{width:10px;color:red;}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<h2>宠物发帖</h2>
+		<form id="pet_pub" action="server.php" method="post">
+			<table>
+				
+				
+
+				<tr>
+					<td class="required-td">*</td>
+					<td class="left-td">昵称</td>
+					<td><input type="text" name="nick"/></td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td class="left-td">昵称1</td>
+					<td><input type="text" name="nick1"/></td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td class="left-td">城市</td>
+					<td><input type="text" name="city"/></td>
+				</td>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td class="left-td">年龄</td>
+					<td><input type="text" name="age"/></td>
+				</tr>
+
+				<tr>
+					<td colspan="3"><button id="pub_btn" type="button">提交</button></td>
+				</tr>
+			</table>
+
+			<select multiple="multiple" size="2" id="test">
+				<option value ="volvo">Volvo</option>
+				<option value ="saab">Saab</option>
+				<option value="opel">Opel</option>
+				<option value="audi">Audi</option>
+			</select>
+
+		</form>
+	</div>
+</body>
+</html>
+
+
+<script src="pure.js"></script>
+<script>
+
+PureJS.use("formAuth.js", function (){
+	with (FormAuth){
+		var form = new Form("pet_pub");
+		
+		form.add(field("city").add(required("城市不能为空~")));
+
+		form.add(field("nick").add(rule("server.php", "昵称已被占用",function (ret){return ret && ret.ok})));
+		form.add(field("nick1").add(rule("server1.php", "昵称已被占用",function (ret){return ret && ret.ok})));
+
+		form.add(field("age").add(required("年龄不能为空~")));
+
+		$("#pub_btn").click(function (){
+			form.check().done(function (){
+				$("#pet_pub").submit();
+			}).fail(function (){
+				console.log("error");
+			});
+		});
+	};
+});
+
+</script>

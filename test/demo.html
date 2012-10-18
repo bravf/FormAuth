@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>宠物发帖页</title>
+	<style type="text/css">
+		*{margin:0; padding:0;}
+		.main{width:1000px; margin:0 auto;font:12px/1.5 arial,helvetica,clean,sans-serif;}
+		
+		h2{background-color:#eee;text-align:center;margin-bottom:10px;}
+		table tr{line-height:30px;}
+		input{margin-right:4px;}
+		button{padding:5px 40px;}
+		
+		.error{color:red;font-size:12px;}
+		.left-td{width:100px;}
+		.required-td{width:10px;color:red;}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<h2>宠物发帖</h2>
+		<form id="pet_pub" action="server.php" method="post">
+			<table>
+				<tr>
+					<td class="required-td">*</td>
+					<td class="left-td">标题</td>
+					<td><input type="text" name="title"/></td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>地点</td>
+					<td>
+						<select name="district">
+							<option value="-1">请选择</option>
+							<option value="173,海淀">海淀</option>
+							<option value="174,朝阳">朝阳</option>
+						</select>
+
+						<select name="street">
+							<option value="-1">不限</option>
+							<option value="267,东直门">东直门</option>
+							<option value="259,和平里">和平里</option>
+						</select>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="required-td">*</td>
+					<td>供需</td>
+					<td>
+						<input name="deal_type" type="radio" value="1"/>转让
+						<input name="deal_type" type="radio" value="2"/>求购
+					</td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>发布人</td>
+					<td>
+						<input name="agent" type="radio" value="1"/>个人
+						<input name="agent" type="radio" value="2"/>商家
+					</td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>类别</td>
+					<td>
+						<input type="radio" name="minor_category" value="696,taidixiong,泰迪熊"/>泰迪熊
+						<input type="radio" name="minor_category" value="692,zangao,藏獒" />藏獒
+						<input type="radio" name="minor_category" value="695,jinmao,金毛犬" />金毛犬
+					</td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>价格</td>
+					<td><input name="price" type="text" size="4" maxlength="6"/>元</td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>性别</td>
+					<td>
+						<input name="sex" type="radio" value="1" />公
+						<input name="sex" type="radio" value="2" />母
+					</td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td>年龄</td>
+					<td>
+						<input name="age" type="text" size="4" maxlength="5"/>
+						<select name="age_type" id="id_age_type" type="select">
+							<option value="2">个月</option>
+							<option value="1">岁</option>
+							<option value="3">天</option>
+						</select>
+					</td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td>买家承诺</td>
+					<td>
+						<input type="checkbox" id="checkbox_is_promise" name="checkbox_is_promise" value="1"/>包退换
+						<input size="3" type="text" name="promise_days" value="15" maxlength="3"/>
+						<input type="checkbox" name="promise_yimiao" />疫苗齐全
+						<input type="checkbox" name="promise_quchong"/>已驱虫
+					</td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td>视频看狗</td>
+					<td><input type="checkbox" name="video" value="1"/>支持视频看狗，提高信任度</td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>描述</td>
+					<td><textarea name="description" type="textarea" rows="6" cols="50"></textarea></td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>手机号</td>
+					<td><input name="phone" type="text"/><td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td>QQ</td>
+					<td><input name="im" type="text"/></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td>联系人</td>
+					<td><input name="person" type="text" /></td>
+				</tr>
+
+				<tr>
+					<td class="required-td">*</td>
+					<td>喜欢</td>
+					<td>
+						<input type="checkbox" name="love[]"/> 吃的
+						<input type="checkbox" name="love[]"/> 喝的
+						<input type="checkbox" name="love[]"/> 玩的
+					</td>
+				</tr>
+
+				<tr>
+					<td colspan="3"><button id="pub_btn" type="button">发布</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
+
+
+<script src="pure.js"></script>
+<script>
+
+PureJS.use("formAuth.js", function (){
+	
+	var phone_reg_0 = /1[3458]\d{9}|(0\d{2,4}-)?[2-9]\d{6,7}(-\d{2,5})?|(?!\d+(-\d+){3,})[48]00(-?\d){7,10}/;
+	var phone_reg_1 = /^1[3458]\d{9}$|^(0\d{2,4}-)?[2-9]\d{6,7}(-\d{2,5})?$|^(?!\d+(-\d+){3,})[48]00(-?\d){7,10}$/;
+	var chr_reg = /※|◆|▌|▎|▏|▓|▔|▕|■|□|▲|△|▼|▽|◆|◇|○|☉|☆|★|◥|◤|◣|◢|●|◎|♀|♂|〓|㊣|℅|【|】|▇|▇██|▇▇▇██▇▇▇▇█|▇▇▇▇|██▇|██|▄▄|▄|▁|▃▂|█|▂/;
+
+	with (FormAuth){
+		var form = new Form("pet_pub");
+
+		// 标题
+		form.add(field("title")
+			.setFocusMsg("6-30字，不能填写电话、特殊符号")
+			.add(required("忘记填写标题啦"), 
+				 minLength(6, "标题不足6个字奥"), 
+				 maxLength(30, "标题超出30个字啦"), 
+				 not(phone_reg_0,  "描述不能填写电话")));
+		
+		// 地点
+		form.add(and(field("district").add(required()), field("street").add(required())).setMsg("忘记选择区域啦"));
+
+		// 供需
+		form.add(field("deal_type").add(required("忘记选择供需关系")));
+
+		// 发布人
+		form.add(field("agent").add(required("忘记选择发布人啦")));
+
+		// 类别
+		form.add(field("minor_category").add(required("忘记填写类别啦")));
+
+		// 价格
+		form.add(field("price").add(rule(/^[1-9]\d{0,5}$/, "要填写1-6位数的正整数")));
+
+		// 性别
+		form.add(field("sex").add(required("忘记选择性别了")));
+
+		// 年龄
+		var age_rule_0 = rule(/^[1-9]\d*$/, "年龄必须是正整数哦");
+		var age_rule_1 = rule(function (ele){
+			var value = ~~ele.value();
+			var age_type = $("#id_age_type").val();
+			
+			if (age_type == 1){
+				this.msg = "年龄不能大于40岁";
+				return value <= 40;
+			}
+
+			if (age_type == 2){
+				this.msg = "年龄不能大于480个月";
+				return value <= 480;
+			}
+
+			if (age_type == 3){
+				this.msg = "年龄不能大于14600天";
+				return value <= 14600;
+			}
+
+			return true;
+		});
+		var age = field("age").add(or(empty(), and(age_rule_0, age_rule_1)));
+		$("#id_age_type").change(function (){
+			age.check();
+		});
+		form.add(age);
+
+		// 卖家承诺
+		var min_day = rule(function (ele){
+			return ~~ele.value() >= 1;
+		}, "包退换天数最小为1天哦");
+
+		var max_day = rule(function (ele){
+			return ~~ele.value() <= 180;
+		}, "包退换天数最大为180天哦");
+
+		form.add(field("promise_days").add(min_day, max_day).setFocusMsg("包退换天数最小1天最大180天哦").off());
+		
+		$("#checkbox_is_promise").change(function (){
+			var me = $(this), field = form.find("promise_days");
+			
+			if (me.attr("checked")) field.on();
+			else field.off();
+
+			field.check();
+		});
+
+		// 描述
+		var des = field("description").add(
+			required("10-800字，不能填写电话、特殊符号"),
+			minLength(10, "描述不足10个字哦"),
+			maxLength(800, "描述超过800字啦"),
+			not(phone_reg_0, "描述不能填写电话"),
+			not(chr_reg, "描述不能填写特殊符")
+		);
+		form.add(des);
+
+		// 手机号
+		form.add(field("phone").add(
+			required("忘记填写电话啦"),
+			rule(phone_reg_1, "电话格式错误，如87654321-001或400-1234-5678138********"))
+		);
+
+		// qq
+		form.add(field("im").add(or(empty(), rule(/^\d{4,10}$/, "QQ号码格式错误"))).setFocusMsg("防欺诈提示：近期发现有不法分子冒充赶集网通过QQ邮件和QQ消息诱骗用户打开非法链接，请您提高警惕！"));
+
+		// 联系人
+		form.add(field("person").add(
+			or(empty(), and(
+				rule(/^[\u4E00-\u9FA5\uF900-\uFA2Da-zA-Z]+$/, "要填写2-6个汉字或字母哦"),
+				minLength(2, "最少2个汉字或字母"),
+				maxLength(6, "最多6个汉字或字母")
+		))));
+
+		// 喜欢
+		form.add(field("love[]").add(required("至少选一个啊")));
+
+		// 提交
+		$("#pub_btn").click(function (){
+			form.check().done(function (){
+				$("#pet_pub").submit();
+			}).fail(function (){
+				console.log("error");
+			});
+		});
+
+	};
+});
+
+</script>
