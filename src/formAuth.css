@@ -1,0 +1,6 @@
+.fa-tip{font-size:12px;margin-left:5px; padding-left:15px;}
+
+.fa-normal{background:url("images/onFocus.png") no-repeat 5px 3px;}
+.fa-error{color:red;background:url("images/onError.png") no-repeat 5px 3px;}
+.fa-io{color:red;}
+.fa-ok{color:green;background:url("images/onValid.png") no-repeat;}
