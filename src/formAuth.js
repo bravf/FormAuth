@@ -13,7 +13,7 @@ PureJS.use(["jquery.net.js", "util.js", "formAuth.css"], function (){
     /*****************************************/
     /*            辅助函数                   */
     /*****************************************/
-    var comment = {ok : "&nbsp;", pending : "pending"};
+    var comment = {ok : "&nbsp;", pending : "&nbsp;"};
 
     // 获取js对象类型
     var js_type = function (obj){
