@@ -1,5 +1,2 @@
-FormAuth
+此项目已经废弃。请查看Stars项目。
 ========
-
-FormAuth
-http://daimou.sinaapp.com/zdd_lab/FormAuth/demo.html
